@@ -118,10 +118,16 @@ func generate(settings config.CombinedSettings, enums []Enum, structs []Struct, 
 		return nil
 	}
 
-	dbFileName := "db.go"
-	if golang.OutputDBFileName != "" {
-		dbFileName = golang.OutputDBFileName
+	if golang.EmitExportedQueries {
+		dbFileName := "db.go"
+		if golang.OutputDBFileName != "" {
+			dbFileName = golang.OutputDBFileName
+		}
+		if err := execute(dbFileName, "dbFile"); err != nil {
+			return nil, err
+		}
 	}
+
 	modelsFileName := "models.go"
 	if golang.OutputModelsFileName != "" {
 		modelsFileName = golang.OutputModelsFileName
@@ -131,9 +137,6 @@ func generate(settings config.CombinedSettings, enums []Enum, structs []Struct, 
 		querierFileName = golang.OutputQuerierFileName
 	}
 
-	if err := execute(dbFileName, "dbFile"); err != nil {
-		return nil, err
-	}
 	if err := execute(modelsFileName, "modelsFile"); err != nil {
 		return nil, err
 	}

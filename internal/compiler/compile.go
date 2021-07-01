@@ -134,9 +134,13 @@ func (c *Compiler) parseQueries(o opts.Parser) (*Result, error) {
 	if len(merr.Errs()) > 0 {
 		return nil, merr
 	}
-	if len(q) == 0 {
-		return nil, fmt.Errorf("no queries contained in paths %s", strings.Join(c.conf.Queries, ","))
+
+	if c.conf.Gen.Go.EmitExportedQueries == true {
+		if len(q) == 0 {
+			return nil, fmt.Errorf("no queries contained in paths %s", strings.Join(c.conf.Queries, ","))
+		}
 	}
+
 	return &Result{
 		Catalog: c.catalog,
 		Queries: q,
